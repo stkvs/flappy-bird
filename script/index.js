@@ -25,17 +25,10 @@ const pipe2 = document.createElement('div');
 pipe2.classList.add('bottomPipe');
 gameArea.appendChild(pipe2);
 
-// Create the pipes
-const pipeGap = 248; // Define the gap between the pipes
-const pipeElevation = Math.floor(Math.random() * (gameArea.clientHeight - pipeGap)); // Define the elevation of the pipes
-
-pipe1.style.transform = `translateY(-${pipeElevation - pipeGap}px)`;
-pipe2.style.transform = `translateY(-${pipeElevation + pipeGap}px)`;
-
 // Game information
 const gravity = 1;
 let isGameOver = false;
-let player = {y: 100, speed: 0};
+let player = {y: 100, speed: 0, rotation: 0};
 
 const ground = document.createElement('div');
 ground.classList.add('ground');
@@ -52,21 +45,32 @@ function playGame() {
     player.speed += gravity;
     player.y += player.speed;
     bird.style.top = player.y + 'px';
-    
-    // Rotate the bird when falling
-    // let deg = 0;
-    // if (parseInt(bird.style.top) > 100) {
-    //     deg += 1;
-    //     console.log(deg);
-    //     // bird.style.transform += `rotate(${deg})`;
-    // }
+
+    const rotateVar = 5.6;
+
+    if (player.rotation <= 5.6) {
+        // player.rotation = rotateVar;
+        bird.style.transform += `rotate(${rotateVar}deg)`;
+    }
+
+    else {
+        console.log('Not Spinning')
+    }
 
     // Check if the player presses space or up on the arrow keys
     document.addEventListener('keydown', function(event) {
         if (event.code === 'Space' || event.code === 'ArrowUp') {
-            player.speed = -15; // Adjust the jump height as needed
+            player.rotation -= 0.5;
+            
+            setTimeout(() => {
+                player.rotation = 0;
+            }, 1000);
+
+            player.speed = -15;
         }
     });
+
+    console.log(player.rotation)
 
     // Check if the player/bird has hit the ground
     if (player.y + bird.clientHeight >= ground.offsetTop || player.y <= 0) {
